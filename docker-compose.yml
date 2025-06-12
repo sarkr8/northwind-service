@@ -1,0 +1,7 @@
+version: '3.8'
+
+services:
+  northwind-service:
+    image: sarkr8/northwind-service:latest
+    ports:
+      - "8080:8080"

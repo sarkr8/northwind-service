@@ -1,0 +1,235 @@
+🧱 ESTRUCTURA DETALLADA DEL MICROSERVICIO CON SPRING BOOT + JPA + SQLITE
+
+Este microservicio RESTful permite realizar operaciones CRUD sobre clientes (tabla customers). Está organizado por capas, siguiendo buenas prácticas de arquitectura limpia y desacoplamiento. A continuación se explica en profundidad cada componente del proyecto:
+
+
+---
+
+📁 ENTITY: com.hiram.northwind.entity.Customer
+
+Rol: Representa una fila de la tabla customers en forma de objeto Java. Esta clase está mapeada a una tabla de SQLite usando anotaciones JPA.
+
+@Entity
+@Table(name = "Customers")
+public class Customer {
+    @Id
+    @Column(name = "CustomerID")
+    private String id;
+
+    @Column(name = "CompanyName")
+    private String company_name;
+
+    // ...otros campos
+}
+
+Anotaciones importantes:
+
+@Entity: convierte esta clase en una entidad JPA.
+
+@Table(name = ...): indica el nombre exacto de la tabla.
+
+@Id: clave primaria.
+
+@Column(name = ...): especifica la columna exacta en la BD (especialmente útil si no coincide con el nombre del atributo).
+
+
+
+---
+
+📁 DTO: com.hiram.northwind.dto.CustomerRequest
+
+Rol: Objeto que representa la entrada del cliente cuando se hace un POST. Se usa para recibir datos de forma controlada, sin exponer toda la entidad Customer.
+
+public class CustomerRequest {
+    @NotNull
+    private String id;
+
+    @NotNull
+    @Size(min = 2, max = 50)
+    private String company_name;
+
+    private String contact_name;
+    // ...otros campos
+}
+
+Ventaja: Permite validar o limitar los campos que vienen del cliente, sin afectar la entidad directamente.
+
+
+---
+
+📁 REPOSITORY: com.hiram.northwind.repository.CustomerRepository
+
+Rol: Define el acceso a la base de datos sin escribir SQL. Gracias a JpaRepository, Spring genera automáticamente métodos como findAll(), findById(), save() y deleteById().
+
+public interface CustomerRepository extends JpaRepository<Customer, String> {}
+
+
+---
+
+📁 SERVICE: com.hiram.northwind.service.CustomerService
+
+Rol: Es la interfaz que define las operaciones que se pueden hacer con un Customer.
+
+public interface CustomerService {
+    List<Customer> getAll();
+    Customer getById(String id);
+    Customer create(CustomerRequest request);
+    void delete(String id);
+}
+
+
+---
+
+📁 LOGIC: com.hiram.northwind.logic.CustomerServiceImpl
+
+Rol: Implementa la lógica del servicio definido en la interfaz. Aquí es donde ocurre el procesamiento real de los datos.
+
+@Service
+public class CustomerServiceImpl implements CustomerService {
+    private final CustomerRepository repository;
+
+    public CustomerServiceImpl(CustomerRepository repository) {
+        this.repository = repository;
+    }
+
+    @Override
+    public List<Customer> getAll() {
+        return repository.findAll();
+    }
+
+    @Override
+    public Customer getById(String id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Customer create(CustomerRequest request) {
+        Customer customer = new Customer();
+        customer.setId(request.getId());
+        customer.setCompany_name(request.getCompany_name());
+        // ...otros campos
+        return repository.save(customer);
+    }
+
+    @Override
+    public void delete(String id) {
+        repository.deleteById(id);
+    }
+}
+
+
+---
+
+📁 CONTROLLER: com.hiram.northwind.controller.CustomerController
+
+Rol: Expone los endpoints REST. Traduce llamadas HTTP en acciones del servicio.
+
+@RestController
+@RequestMapping("/api/customers")
+public class CustomerController {
+    private final CustomerService service;
+
+    public CustomerController(CustomerService service) {
+        this.service = service;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Customer>> getAll() {
+        return ResponseEntity.ok(service.getAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Customer> getById(@PathVariable String id) {
+        Customer customer = service.getById(id);
+        return (customer != null) ? ResponseEntity.ok(customer) : ResponseEntity.notFound().build();
+    }
+
+    @PostMapping
+    public ResponseEntity<Customer> create(@RequestBody @Valid CustomerRequest request) {
+        Customer created = service.create(request);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+}
+
+
+---
+
+⚙️ CONFIGURACIÓN: SQLiteDialect + application.properties
+
+SQLiteDialect: clase personalizada para permitir que Hibernate funcione correctamente con SQLite.
+
+application.properties: contiene la configuración de conexión a base de datos, nombre de la app, estrategia de nombres y seguridad simple.
+
+
+spring.application.name=northwind-service
+spring.datasource.url=jdbc:sqlite:/app/db/sqlite_northwind.db
+spring.datasource.driver-class-name=org.sqlite.JDBC
+spring.jpa.hibernate.ddl-auto=none
+spring.jpa.database-platform=com.hiram.northwind.config.SQLiteDialect
+spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+
+---
+
+🐳 DOCKER
+
+Se creó un Dockerfile multietapa para empaquetar el microservicio con Maven y Java.
+
+Se copió la base de datos .db al contenedor.
+
+Se usó docker build, docker run, y luego docker tag y docker push para subirlo a Docker Hub.
+
+También se configuró pass y GPG para permitir el inicio de sesión desde terminal (docker login).
+
+
+
+---
+
+🐙 GIT Y GITHUB
+
+Se inicializó el repositorio con git init, se configuró el nombre de usuario y correo.
+
+Se hizo commit del proyecto y se subió a GitHub.
+
+Se planea agregar una carpeta de documentación adicional con README.md y apuntes.
+
+
+
+---
+
+📦 DOCKER COMPOSE
+
+Se creó un archivo docker-compose.yml para definir el servicio como contenedor.
+
+Se puede levantar el contenedor con:
+
+
+docker compose up -d
+
+O detenerlo con:
+
+
+docker compose down
+
+
+---
+
+📌 PRÓXIMOS PASOS
+
+Subir carpeta de documentación a GitHub.
+
+Agregar instrucciones de uso al README general.
+
+Explorar pruebas automáticas, integración continua, y seguridad.
+
+Posiblemente desplegar en un VPS más adelante.
+
+
+
+

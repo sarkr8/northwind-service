@@ -1,0 +1,129 @@
+🗓️ PLAN DE ESTUDIO ACTUALIZADO (4 DÍAS)
+✅ Día 1 – Fundamentos y pruebas completas del microservicio
+🎯 Objetivo: Entender la arquitectura de un microservicio Spring Boot con SQLite y practicar todos los endpoints. Configurar pruebas y validaciones.
+
+🧱 Estructura y funcionalidad:
+✅ Revisión completa de capas (entity, repository, service, logic, controller).
+✅ Explicación profunda de cada anotación y rol por capa.
+✅ Conexión verificada con SQLite (DB Browser).
+
+🔍 Endpoints con Postman:
+✅ Pruebas GET, GET /id, POST, DELETE.
+✅ Confirmado con SQLite que los datos se insertan y borran.
+
+🔐 Seguridad:
+✅ Desactivación temporal de Spring Security para pruebas.
+
+🧪 Pruebas unitarias:
+✅ JUnit para métodos de servicio (getAll, getById, create, delete).
+✅ Mockito para simular el repositorio (sin acceder a la base real).
+📌 Nota: Estas pruebas son reutilizables para futuros microservicios.
+📌 Las corriste desde IntelliJ para observar los resultados en tiempo real.
+📌 Aprendiste que son esenciales para integrarse en pipelines CI/CD.
+
+✅ Validaciones:
+✅ Se agregó @NotBlank, @Size al CustomerRequest.
+✅ Se usó @Valid en el controller.
+✅ Se explicó cómo responde el sistema si el input es inválido.
+📌 Ejemplo: ID vacío lanza error con mensaje personalizado.
+
+🔜 Día 2 – Spring Security, Docker y conexión a GitHub
+🎯 Objetivo: Proteger el microservicio, empaquetarlo como contenedor y preparar flujo de trabajo en Git.
+
+🔒 Seguridad:
+✅  Activar Spring Security.
+✅  Configurar autenticación básica (con propiedades o clase de seguridad).
+✅  Probar endpoints protegidos desde Postman (401 si no se envía auth, 200 si sí).
+
+🐳 Docker:
+✅  Crear Dockerfile.
+✅  Construir imagen.
+✅  Ejecutar contenedor local.
+✅  Confirmar acceso a endpoints dentro del contenedor.
+
+🌐 Git y GitHub:
+✅  Crear repositorio.
+✅  Agregar .gitignore.
+✅  Primeros commits (1 por feature/fase lógica).
+✅  Subida a GitHub.
+✅  Buenas prácticas: mensajes como add: Dockerfile, fix: Customer null bug, etc.
+
+🐳 Docker hub 
+✅ Docker login 
+✅ Crear un docker compose yml
+✅ subirlo a docker hub con docker push 
+✅ automatizarlo con docker compose 
+
+versionado de codigo 
+🔲subir nuevamente el proyecto ahora con el yml en una nueva rama y luego unirlo a la rama principal
+
+
+📌 Aprenderás a trabajar con ramas (ej: feature/security, feature/docker).
+
+🗓️ Día 3 – SQL y optimización de datos (ACTUALIZADO)
+🎯 Objetivo: Repasar SQL clave que puedes necesitar entender en producción, y cómo se relaciona con consultas automáticas de JPA. También comprender herramientas más avanzadas como triggers.
+
+📦 Buenas prácticas SQL:
+🔲 Evitar autocommits en scripts (usar BEGIN TRANSACTION, COMMIT de forma consciente).
+🔲 Hacer commits manuales cuando completes una operación consistente (ej: insertar en varias tablas relacionadas).
+🔲 Tener cuidado con operaciones peligrosas: DELETE sin WHERE, UPDATE masivo sin backup.
+
+🧠 Repaso general:
+🔲 JOINS (INNER, LEFT, RIGHT)
+🔲 Subconsultas (WHERE IN, EXISTS, etc.)
+🔲 GROUP BY y HAVING
+🔲 Índices (cómo y cuándo crearlos; afectan performance de SELECT)
+🔲 Vistas (VIEW) (para encapsular lógica compleja)
+🔲 Procedimientos almacenados (útiles en lógica pesada del lado del DB, aunque menos usados con JPA)
+🔲 TRIGGERS (nuevo): ¿Qué es un trigger?
+Es una función que se ejecuta automáticamente cuando ocurre un evento (ej: INSERT, UPDATE, DELETE) en una tabla.
+¿Para qué sirve?
+
+Auditar cambios (guardar historial en otra tabla).
+Validar reglas del negocio.
+Sincronizar datos entre tablas.
+
+
+🔜 Día 4 – Refuerzo general y adaptación a código legado
+🎯 Objetivo: Estar preparado para leer, entender y modificar código de otros developers.
+
+🧠 Adaptación:
+🔲 Leer el microservicio como si fuera legado.
+🔲 Identificar buenas/malas prácticas.
+🔲 Hacer pequeñas mejoras: logging, validaciones, refactorización.
+
+🧰 Herramientas de productividad:
+🔲 Atajos útiles de IntelliJ (generar setters, navegar, refactorizar rápido).
+🔲 Revisar uso de plugins útiles para debugging, Spring, etc.
+
+🔲 Verificación final: correr el microservicio con seguridad activada y tests ejecutando correctamente.
+
+🔁 OPCIONAL – Circuit Breaker con Resilience4j
+🎯 Objetivo: Evitar que un microservicio falle en cascada si otro está caído.
+
+🔧 Preparación:
+🔲 Crear microservicio de orders (secundario).
+🔲 Simular delay o caída.
+🔲 Añadir resilience4j-spring-boot3 al microservicio de customers.
+
+🛡️ Implementación:
+🔲 Usar @CircuitBreaker, @Retry, @FallbackMethod.
+🔲 Probar cómo responde el sistema si orders falla.
+🔲 Revisar logs para verificar comportamiento del patrón.
+
+📝 Notas adicionales:
+✅ Lombok:
+Elimina código repetitivo (getters, setters, constructores).
+
+Mejora legibilidad sin cambiar comportamiento.
+
+✅ Buenas prácticas Git:
+Commit por funcionalidad terminada (no cada línea).
+
+Usa ramas para features nuevas.
+
+Mensajes descriptivos: add: customer endpoint, refactor: service layer.
+
+
+
+

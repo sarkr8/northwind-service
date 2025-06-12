@@ -1,0 +1,43 @@
+🐳 Comandos esenciales de Docker
+🔧 Imágenes
+
+docker build -t nombre-imagen .         # Construye una imagen desde el Dockerfile
+docker images                           # Lista imágenes locales
+docker rmi nombre-imagen                # Elimina una imagen
+
+
+🚀 Contenedores
+
+docker run -d -p 8080:8080 --name nombre-contenedor nombre-imagen
+                                         # Ejecuta un contenedor en segundo plano
+docker ps                                # Lista contenedores en ejecución
+docker ps -a                             # Lista TODOS los contenedores
+docker stop nombre-contenedor           # Detiene un contenedor
+docker rm nombre-contenedor             # Elimina un contenedor
+docker exec -it nombre-contenedor bash  # Entra al contenedor en modo interactivo
+docker logs nombre-contenedor           # Muestra los logs de un contenedor
+
+🔐 Docker Hub
+
+docker login                             # Inicia sesión (requiere `pass` configurado)
+docker tag nombre-local usuario/nombre-remoto:tag
+                                         # Etiqueta la imagen para subirla a Docker Hub
+docker push usuario/nombre-remoto:tag   # Sube la imagen a Docker Hub
+
+
+📦 Comandos de Docker Compose
+
+docker compose up -d                     # Levanta contenedores definidos en docker-compose.yml
+docker compose down                      # Detiene y elimina contenedores, redes, etc.
+
+Adicionales útiles:
+
+docker compose ps                        # Lista los servicios de Docker Compose en ejecución
+docker compose logs                      # Muestra logs de los servicios
+docker compose build                     # Reconstruye imágenes definidas en docker-compose.yml
+
+
+📌 Extras útiles
+docker network ls                        # Lista redes
+docker volume ls                         # Lista volúmenes
+docker system prune                      # Limpia contenedores/parados, redes sin usar e imágenes sin referencia

@@ -1,0 +1,29 @@
+🎯 Patrones de diseño – ¿Qué son y por qué importan?
+🔹 Son soluciones típicas y probadas a problemas comunes de programación.
+
+🔹 Se aplican como una forma de organizar tu código para que sea más mantenible, reutilizable y fácil de extender.
+
+🔹 Ya estás usando varios, aunque no lo sepas:
+
+✅ Patrones que ya estás usando:
+DTO (Data Transfer Object):
+Ya implementado con CustomerRequest. Sirve para evitar exponer la entidad completa y controlar qué se recibe del cliente.
+
+Layered Architecture (capa a capa):
+Separaste Controller → Service → Repository. Es un patrón clásico en Spring.
+
+Dependency Injection (DI):
+Spring te inyecta dependencias como CustomerService o CustomerRepository.
+
+Singleton	Una sola instancia (Spring lo usa para beans)	✅ implícito
+
+se anexo tabla favor de ampliar de ser necesario el bloc 
+de notas para ver completo.
+
+🔎 Patrones importantes que podrías ver pronto:
+Patrón	                                            ¿Qué hace?	                                                ¿Lo necesitas ya?
+Singleton	Asegura que una clase tenga una sola instancia. Spring lo hace por defecto con beans.	        ✅ (implícito)
+Factory	        Crea objetos sin exponer lógica de instanciación. Muy común en pruebas o configuraciones.	🔜 Útil en proyectos grandes
+Builder	        Construye objetos complejos paso a paso. Útil cuando un constructor tiene muchos parámetros.	🔜 Avanzado
+Observer	Notifica a otros objetos cuando algo cambia (como listeners o eventos).	                        🔜 En apps reactivas
+Strategy	Cambia dinámicamente el comportamiento (ej. algoritmo de descuento).	                        🔜 Lógica avanzada

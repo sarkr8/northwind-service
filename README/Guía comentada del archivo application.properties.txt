@@ -1,0 +1,55 @@
+# ===============================
+# CONFIGURACIÓN DE LA BASE DE DATOS
+# ===============================
+
+# URL de conexión JDBC.
+# Para SQLite, se usa el path local al archivo.
+# Para otras bases, el formato es:
+# jdbc:<gestor>://<host>:<puerto>/<nombre_base_datos>
+# Ejemplos:
+# - MySQL: jdbc:mysql://localhost:3306/nombre_bd
+# - PostgreSQL: jdbc:postgresql://localhost:5432/nombre_bd
+# - SQL Server: jdbc:sqlserver://localhost:1433;databaseName=nombre_bd
+# - Oracle: jdbc:oracle:thin:@localhost:1521:XE
+spring.datasource.url=jdbc:sqlite:src/main/resources/db/northwind.db
+
+# Clase del driver JDBC (depende del gestor de BD)
+# Se indica en el repositorio Maven cuando agregas la dependencia
+# Ejemplos:
+# - MySQL: com.mysql.cj.jdbc.Driver
+# - PostgreSQL: org.postgresql.Driver
+# - SQL Server: com.microsoft.sqlserver.jdbc.SQLServerDriver
+# - Oracle: oracle.jdbc.OracleDriver
+spring.datasource.driver-class-name=org.sqlite.JDBC
+
+# Dialecto Hibernate: traduce SQL estándar a dialecto específico del gestor
+# Para bases populares, Hibernate ya tiene dialéctos integrados:
+# - org.hibernate.dialect.MySQLDialect
+# - org.hibernate.dialect.PostgreSQLDialect
+# - org.hibernate.dialect.SQLServerDialect
+# - org.hibernate.dialect.OracleDialect
+# Para SQLite usamos uno personalizado.
+spring.jpa.database-platform=com.hiram.northwind.config.SQLiteDialect
+
+# Control de estructura automática de Hibernate
+# - none: No cambia nada
+# - validate: Solo valida estructura
+# - update: Intenta sincronizar estructura
+# - create: Borra y crea todo
+# - create-drop: igual a create, pero borra al cerrar la app
+spring.jpa.hibernate.ddl-auto=none
+
+# ===============================
+# ESTRATEGIA DE NOMBRES EN BD
+# ===============================
+# Si quieres que Hibernate respete los nombres exactos de las columnas
+# (sin convertir de camelCase a snake_case automáticamente)
+# usa esta estrategia:
+spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+# ===============================
+# SPRING SECURITY OPCIONAL
+# ===============================
+# Descomenta estas líneas para habilitar login básico con usuario y contraseña
+# spring.security.user.name=admin
+# spring.security.user.password=admin
