@@ -1,0 +1,246 @@
+🧱 ESTRUCTURA DETALLADA DEL MICROSERVICIO CON SPRING BOOT + JPA + SQLITE
+
+Este microservicio RESTful permite realizar operaciones CRUD sobre clientes
+(tabla customers). Está organizado por capas, siguiendo buenas prácticas de arquitectura
+limpia y desacoplamiento. A continuación se explica en profundidad cada componente del proyecto:
+
+
+---
+
+📁 ENTITY: com.hiram.northwind.entity.Customer
+
+Rol: Representa una fila de la tabla customers en forma de objeto Java. Esta clase está mapeada
+a una tabla de SQLite usando anotaciones JPA.
+
+@Entity
+@Table(name = "customers")
+public class Customer {
+    @Id
+    @Column(name = "CustomerID")
+    private String id;
+
+    @Column(name = "CompanyName")
+    private String company_name;
+
+    // ...otros campos
+}
+
+Anotaciones importantes:
+
+@Entity: convierte esta clase en una entidad JPA.
+
+@Table(name = ...): indica el nombre exacto de la tabla.
+
+@Id: clave primaria.
+
+@Column(name = ...): especifica la columna exacta en la BD (especialmente útil si no coincide
+con el nombre del atributo).
+
+
+¿Por qué usar nombres como ``? Porque es más idiomático en Java usar camelCase, pero con
+@Column(name = ...) puedes respetar la convención snake_case de SQLite. De hecho solo se uso snake case
+por las prisas de la practica para no refactorizar todo el proyecto.
+
+
+---
+
+📁 DTO: com.hiram.northwind.dto.CustomerRequest
+
+Rol: Objeto que representa la entrada del cliente cuando se hace un POST.
+Se usa para recibir datos de forma controlada, sin exponer toda la entidad Customer.
+
+public class CustomerRequest {
+    private String id;
+    private String company_name;
+    private String contact_name;
+    // ...otros campos
+}
+
+Ventaja: Permite validar o limitar los campos que vienen del cliente, sin afectar la entidad directamente.
+
+
+---
+
+📁 REPOSITORY: com.hiram.northwind.repository.CustomerRepository
+
+Rol: Define el acceso a la base de datos sin escribir SQL.
+Gracias a JpaRepository, Spring genera automáticamente métodos como findAll(), findById(), save() y deleteById().
+
+public interface CustomerRepository extends JpaRepository<Customer, String> {}
+
+Claves:
+
+No requiere implementación manual.
+
+El tipo Customer es la entidad, y String es el tipo de su ID.
+
+
+
+---
+
+📁 SERVICE: com.hiram.northwind.service.CustomerService
+
+Rol: Es la interfaz que define las operaciones que se pueden hacer con un Customer.
+
+public interface CustomerService {
+    List<Customer> getAll();
+    Customer getById(String id);
+    Customer create(CustomerRequest request);
+    void delete(String id);
+}
+
+Ventaja: Separa la definición del "qué se hace" de la implementación del "cómo se hace".
+
+
+---
+
+📁 LOGIC: com.hiram.northwind.logic.CustomerServiceImpl
+
+Rol: Implementa la lógica del servicio definido en la interfaz.
+Aquí es donde ocurre el procesamiento real de los datos.
+
+@Service
+public class CustomerServiceImpl implements CustomerService {
+    private final CustomerRepository repository;
+
+    public CustomerServiceImpl(CustomerRepository repository) {
+        this.repository = repository;
+    }
+
+    @Override
+    public List<Customer> getAll() {
+        return repository.findAll();
+    }
+
+    @Override
+    public Customer getById(String id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Customer create(CustomerRequest request) {
+        Customer customer = new Customer();
+        customer.setId(request.getId());
+        customer.setCompany_name(request.getCompany_name());
+        // ...otros campos
+        return repository.save(customer);
+    }
+
+    @Override
+    public void delete(String id) {
+        repository.deleteById(id);
+    }
+}
+
+Explicación detallada:
+
+El constructor recibe el CustomerRepository, inyectado por Spring.
+
+getAll() llama a findAll() → devuelve todos los registros.
+
+getById() llama a findById() → busca por ID (y si no lo encuentra, devuelve null).
+
+create() transforma el DTO CustomerRequest en una entidad Customer, la guarda y la devuelve.
+
+delete() elimina un cliente por ID.
+
+
+¿Por qué separar ``? Por buena práctica. La interfaz (service) puede ser reemplazada fácilmente
+si en el futuro decides cambiar la lógica.
+
+
+---
+
+📁 CONTROLLER: com.hiram.northwind.controller.CustomerController
+
+Rol: Expone los endpoints REST. Traduce llamadas HTTP en acciones del servicio.
+
+@RestController
+@RequestMapping("/api/customers")
+public class CustomerController {
+    private final CustomerService service;
+
+    public CustomerController(CustomerService service) {
+        this.service = service;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Customer>> getAll() {
+        return ResponseEntity.ok(service.getAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Customer> getById(@PathVariable String id) {
+        Customer customer = service.getById(id);
+        return (customer != null) ? ResponseEntity.ok(customer) : ResponseEntity.notFound().build();
+    }
+
+    @PostMapping
+    public ResponseEntity<Customer> create(@RequestBody CustomerRequest request) {
+        Customer created = service.create(request);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+}
+
+Detalle de funciones:
+
+@RestController: Le dice a Spring que esta clase responde a peticiones REST.
+
+@RequestMapping("/api/customers"): Define un prefijo común.
+
+@GetMapping, @PostMapping, @DeleteMapping: Mapean los verbos HTTP.
+
+@RequestBody: Indica que el cuerpo del POST es un JSON (DTO).
+
+@PathVariable: Extrae variables desde la URL.
+
+ResponseEntity: Estructura para devolver código de estado y datos (muy útil para buenas prácticas REST).
+
+
+
+---
+
+⚙️ CONFIGURACIÓN: SQLiteDialect + application.properties
+
+``: Permite que Hibernate entienda cómo comunicarse con SQLite.
+
+``: Configura propiedades generales, conexión a BD, y (si lo necesitas) credenciales para pruebas.
+
+
+spring.datasource.url=jdbc:sqlite:src/main/resources/db/northwind.db
+spring.datasource.driver-class-name=org.sqlite.JDBC
+spring.jpa.database-platform=com.hiram.northwind.config.SQLiteDialect
+spring.jpa.hibernate.ddl-auto=none
+
+# Para evitar errores de nombres con snake_case
+spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+
+---
+
+✅ RESUMEN DE FUNCIONAMIENTO
+
+1. El cliente (Postman) hace una petición a un endpoint (/api/customers).
+
+
+2. El controller la recibe y llama al método correspondiente del CustomerService.
+
+
+3. El servicio (implementado en logic) consulta el repositorio, que a su vez accede a SQLite.
+
+
+4. Los datos se devuelven como objetos Java (entidades) y luego como JSON al cliente.
+
+
+
+
+---
+
+Este diseño modular y desacoplado facilita la prueba, el mantenimiento y la escalabilidad del microservicio.
+
