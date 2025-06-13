@@ -1,0 +1,5 @@
+✅ https://mvnrepository.com → busca por nombre o tecnología: MySQL, SQLite, Spring Security, etc.
+
+✅ La documentación oficial de cada motor de base de datos (como MySQL, PostgreSQL, Oracle) te dice cuál driver usar.
+
+✅ Documentación de Spring Boot: https://docs.spring.io/spring-boot/docs/current/reference/html/

@@ -1,0 +1,56 @@
+🐳 Guía rápida: Dockerfile para microservicios Spring Boot
+
+Estructura estándar de un Dockerfile multietapa
+
+# ============================
+# Etapa 1: Construcción del proyecto
+# ============================
+FROM maven:3.8.7-eclipse-temurin-17 AS build
+
+# Directorio de trabajo dentro del contenedor temporal
+WORKDIR /app
+
+# Copiamos todo el contenido del proyecto (código + pom.xml)
+COPY . .
+
+# Compilamos el proyecto sin ejecutar pruebas
+RUN mvn clean package -DskipTests
+
+# ============================
+# Etapa 2: Imagen final ligera de ejecución
+# ============================
+FROM eclipse-temurin:17-jdk-alpine
+
+WORKDIR /app
+
+# Copiamos el .jar compilado
+COPY --from=build /app/target/*.jar app.jar
+
+# Copiamos recursos adicionales necesarios en tiempo de ejecución (ej: base de datos SQLite)
+COPY --from=build /app/src/main/resources/db ./src/main/resources/db
+
+# Exponemos el puerto que Spring Boot usa por defecto
+EXPOSE 8080
+
+# Comando de ejecución
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
+---------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
+
+Dónde obtener los datos del Dockerfile:
+
+Imagen base Maven: https://hub.docker.com/_/maven
+
+Imagen base Java (Temurin): https://hub.docker.com/_/eclipse-temurin
+
+Verifica la versión Java en tu pom.xml o mvn -v
+
+Asegúrate de copiar recursos necesarios (como DB o archivos .properties) si no están embebidos
+
+
+
+---
+
+
+

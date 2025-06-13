@@ -1,0 +1,25 @@
+✅ Segundo mini curso: Frontend para desarrolladores backend
+Tecnologías a cubrir:
+
+HTML (estructuración semántica)
+
+CSS (estilos y responsive)
+
+JavaScript (interacción básica, manipulación del DOM, fetch)
+
+React (componentes, hooks, estado, props)
+
+✅ Tercer mini curso: Exploración de tecnologías complementarias
+Tecnologías sugeridas:
+
+MySQL Workbench (ya sabes MySQL, pero exploramos visualización avanzada)
+
+MongoDB (introducción a bases de datos NoSQL)
+
+Django (como alternativa Python fullstack)
+
+Angular (otra opción frontend popular)
+
+PyCharm (uso práctico si decides seguir con Python)
+
+LM Studio (si buscas explorar IA generativa localmente o NLP avanzado)
