@@ -42,7 +42,7 @@ public class CustomerController {
     // POST /api/customers
     @PostMapping
     public ResponseEntity<Customer> create(@RequestBody @Valid CustomerRequest request) {
-        Customer created = service.create(request);
+        Customer created = service.createCustomer(request);
         return new ResponseEntity<>(created, HttpStatus.CREATED);  // 201 Created con el nuevo customer
     }
 
@@ -51,5 +51,14 @@ public class CustomerController {
     public ResponseEntity<Void> delete(@PathVariable String id) {
         service.delete(id);
         return ResponseEntity.noContent().build();  // 204 No Content al eliminar exitosamente
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Customer> updateCustomer(
+            @PathVariable String id,
+            @Valid @RequestBody CustomerRequest request) {
+
+        Customer updated = service.updateCustomer(id, request);
+        return ResponseEntity.ok(updated);
     }
 }

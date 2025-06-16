@@ -41,7 +41,7 @@ public class CustomerServiceImplTest {
     }
 
     @Test
-    public void testCreate() {
+    public void testCreateCustomer() {
         CustomerRequest request = new CustomerRequest();
         request.setId("BLAUS");
         request.setCompany_name("Blauer See");
@@ -52,7 +52,7 @@ public class CustomerServiceImplTest {
 
         when(repository.save(any())).thenReturn(saved);
 
-        Customer result = service.create(request);
+        Customer result = service.createCustomer(request);
 
         assertNotNull(result);
         assertEquals("BLAUS", result.getId());
