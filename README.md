@@ -1,7 +1,3 @@
-Aquí tienes una versión del README con un tono técnico, directo y profesional, adaptada a tus requerimientos específicos y sin elementos decorativos.
-
----
-
 # Northwind Microservice - Proyecto de Aprendizaje
 
 Este microservicio ha sido desarrollado utilizando Java 17 y Spring Boot 3.5 con el objetivo de profundizar en el desarrollo de APIs REST, la gestión de persistencia con JPA y la implementación de seguridad básica.
