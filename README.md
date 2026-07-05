@@ -1,6 +1,6 @@
-# Northwind Microservice - Proyecto de Aprendizaje
+# Northwind Microservice 
 
-Este microservicio ha sido desarrollado utilizando Java 17 y Spring Boot 3.5 con el objetivo de profundizar en el desarrollo de APIs REST, la gestión de persistencia con JPA y la implementación de seguridad básica.
+Este microservicio de alto rendimiento está diseñado para la gestión centralizada de clientes basados en el modelo de datos Northwind. Construido bajo una arquitectura empresarial en capas utilizando **Java 17** y **Spring Boot 3.5**, el sistema implementa principios de diseño RESTful, validación estricta de datos y persistencia optimizada para entornos portables.
 
 ## Requisitos de Instalación
 
@@ -17,10 +17,11 @@ El proyecto utiliza la base de datos Northwind en formato SQLite. Para facilitar
 * **Ruta del archivo:** `src/main/resources/db/sqlite_northwind.db`
 * **Estrategia de Naming:** Se ha configurado explícitamente el uso de **snake_case** para los nombres de los campos y tablas. Esta decisión técnica se tomó para garantizar una compatibilidad directa y sin fricciones con la estructura original de la base de datos Northwind en SQLite, evitando así errores de mapeo o transformaciones innecesarias durante las consultas SQL.
 
-## Seguridad
+## Seguridad y Control de Acceso
 
-El acceso a los endpoints está protegido mediante Spring Security. Se requiere autenticación básica (Basic Auth) para todas las peticiones:
+El acceso a la capa de servicios se encuentra restringido mediante **Spring Security**. El microservicio implementa un esquema de autenticación desacoplado para entornos de desarrollo y pruebas:
 
+* **Mecanismo:** HTTP Basic Authentication
 * **Usuario:** admin
 * **Contraseña:** admin
 
@@ -38,12 +39,12 @@ La gestión de clientes se centraliza en el recurso `/api/customers`.
 
 ## Estructura y Tecnologías
 
-El desarrollo emplea una arquitectura por capas:
+El desarrollo emplea una arquitectura por capas enfocada en la mantenibilidad y el aislamiento del dominio:
 
-* **Controladores:** Gestión de peticiones HTTP y exposición de recursos.
-* **Servicios:** Implementación de la lógica de negocio.
-* **Validación:** Uso de `jakarta.validation` en los DTOs de entrada para asegurar la integridad de los datos recibidos.
-* **Persistencia:** Spring Data JPA con un dialecto personalizado para soporte óptimo de SQLite.
+* **Controladores:** Gestión de peticiones HTTP, mapeo de rutas y exposición semántica de recursos REST.
+* **Servicios:** Implementación desacoplada de la lógica de negocio central.
+* **Validación:** Uso estricto de `jakarta.validation` en los Data Transfer Objects (DTOs) de entrada para asegurar la integridad de los datos.
+* **Persistencia:** Spring Data JPA acoplado a un dialecto personalizado para un soporte y rendimiento óptimo sobre SQLite.
 
 ## Instrucciones de Ejecución
 
@@ -58,4 +59,3 @@ La API estará disponible en `http://localhost:8080`.
 ---
 
 **Autor:** Hiram Martínez
-**Nota:** Este repositorio es de carácter educativo y de práctica personal.
